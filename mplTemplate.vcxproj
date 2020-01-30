@@ -27,7 +27,6 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{0B423714-D101-40B5-9BDD-2C2B57F3BFB1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>mplTemplate</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
