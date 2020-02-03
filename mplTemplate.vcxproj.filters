@@ -12,6 +12,9 @@
     <MPL Include="sl\control.mpl">
       <Filter>sl</Filter>
     </MPL>
+    <MPL Include="sl\conventions.mpl">
+      <Filter>sl</Filter>
+    </MPL>
     <MPL Include="sl\memory.mpl">
       <Filter>sl</Filter>
     </MPL>
