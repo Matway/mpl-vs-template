@@ -1,31 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ProjectTools Include="LLVM"/>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml"/>
   </ItemGroup>
-  <PropertyGroup>
-    <CleanDependsOn>
-      $(CleanDependsOn);
-      MPLClean
-    </CleanDependsOn>
-  </PropertyGroup>
-  <Target Name="MPLAll"
-          Condition="'@(MPL)'!=''"
-          AfterTargets="CustomBuild"
-          BeforeTargets="LLVMCompile"
-          Inputs="@(MPL)"
-          Outputs="%(MPL.CompilerOutput)">
-    <Message Importance="high"
-             Text="Compiling MPL, %(MPL.CompilerOutput)..."/>
-    <Exec Command="%(MPL.CompilerPath) -o %(MPL.CompilerOutput) %(MPL.CompilerOptions) @(MPL, ' ')"/>
+
+  <UsingTask
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" TaskFactory="CodeTaskFactory" TaskName="MplCompile">
+    <ParameterGroup>
+      <InputFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true"/>
+      <TrackerLogsFolder Required="true"/>
+    </ParameterGroup>
+    <Task>
+      <Reference Include="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+      <Code Language="cs" Type="Class">
+        <![CDATA[
+using Microsoft.Build.CPPTasks;
+using Microsoft.Build.Framework;
+using System;
+using System.Collections;
+using System.Resources;
+
+namespace Matway.MSBuild
+{
+  public class MplCompile : TrackedVCToolTask
+  {
+    protected override ArrayList SwitchOrderList { get { return switchOrderList; } }
+    protected override string ToolName { get { return "mplc"; } }
+    protected override ITaskItem[] TrackedInputFiles { get { return InputFiles; } }
+    protected override string TrackerIntermediateDirectory { get { return trackerLogsFolder; } }
+
+    private static ArrayList switchOrderList = new ArrayList
+    {
+      "PointerSize",
+      "Definitions",
+      "IncludeFolders",
+      "CallTrace",
+      "ShowMemoryUsage",
+      "AdditionalDependencies",
+      "DisableDebugInfo",
+      "OutputFile",
+      "PartialCompilation",
+      "RecursionDepthLimit",
+      "StaticLoopLimit",
+      "AdditionalOptions",
+      "InputFiles"
+    };
+
+    private String trackerLogsFolder;
+
+    [Required]
+    public ITaskItem[] InputFiles
+    {
+      get { return ActiveToolSwitches["InputFiles"].TaskItemArray; }
+      set
+      {
+        ToolSwitch argument = new ToolSwitch(ToolSwitchType.ITaskItemArray);
+        argument.TaskItemArray = value;
+        ActiveToolSwitches["InputFiles"] = argument;
+      }
+    }
+
+    [Required]
+    public string TrackerLogsFolder { set { trackerLogsFolder = value; } }
+
+    public MplCompile() : base(new ResourceManager("Microsoft.Build.CPPTasks.Strings", typeof(TrackedVCToolTask).Assembly))
+    {
+      MinimalRebuildFromTracking = true;
+      TrackFileAccess = true;
+    }
+
+    protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
+    {
+      foreach (ITaskItem file in InputFiles)
+      {
+        Log.LogMessage(MessageImportance.High, file.ItemSpec);
+      }
+
+      return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+    }
+
+    protected override string GenerateCommandLineCommands()
+    {
+      return base.GenerateResponseFileCommands();
+    }
+
+    protected override string GenerateResponseFileCommands()
+    {
+      return string.Empty;
+    }
+
+    protected override void PostProcessSwitchList()
+    {
+      ToolSwitch argument;
+
+      ToolExe = InputFiles[0].GetMetadata("CompilerPath");
+
+      argument = new ToolSwitch(ToolSwitchType.String);
+      argument.MultipleValues = true;
+      if (InputFiles[0].GetMetadata("PointerSize") == "32") argument.SwitchValue = "-32bits";
+      else if (InputFiles[0].GetMetadata("PointerSize") == "64") argument.SwitchValue = "-64bits";
+      ActiveToolSwitches["PointerSize"] = argument;
+
+      argument = new ToolSwitch(ToolSwitchType.StringArray);
+      argument.StringList = InputFiles[0].GetMetadata("Definitions").Split(';');
+      argument.SwitchValue = "-D ";
+      ActiveToolSwitches["Definitions"] = argument;
+
+      argument = new ToolSwitch(ToolSwitchType.StringPathArray);
+      argument.StringList = InputFiles[0].GetMetadata("IncludeFolders").Split(';');
+      argument.SwitchValue = "-I ";
+      ActiveToolSwitches["IncludeFolders"] = argument;
+
+      argument = new ToolSwitch(ToolSwitchType.String);
+      argument.MultipleValues = true;
+      if (InputFiles[0].GetMetadata("CallTrace") == "SingleThreaded") argument.SwitchValue = "-call_trace 1";
+      else if (InputFiles[0].GetMetadata("CallTrace") == "MSVC") argument.SwitchValue = "-call_trace 2";
+      ActiveToolSwitches["CallTrace"] = argument;
+
+      if (InputFiles[0].GetMetadata("ShowMemoryUsage") != "true") ActiveToolSwitches.Remove("ShowMemoryUsage");
+      else
+      {
+        argument = new ToolSwitch(ToolSwitchType.String);
+        argument.MultipleValues = true;
+        argument.SwitchValue = "-debug_memory";
+        ActiveToolSwitches["ShowMemoryUsage"] = argument;
+      }
+
+      argument = new ToolSwitch(ToolSwitchType.StringArray);
+      argument.StringList = InputFiles[0].GetMetadata("AdditionalDependencies").Split(';');
+      argument.SwitchValue = "-linker_option /DEFAULTLIB:";
+      ActiveToolSwitches["AdditionalDependencies"] = argument;
+
+      if (InputFiles[0].GetMetadata("DisableDebugInfo") != "true") ActiveToolSwitches.Remove("DisableDebugInfo");
+      else
+      {
+        argument = new ToolSwitch(ToolSwitchType.String);
+        argument.MultipleValues = true;
+        argument.SwitchValue = "-ndebug";
+        ActiveToolSwitches["DisableDebugInfo"] = argument;
+      }
+
+      argument = new ToolSwitch(ToolSwitchType.File);
+      argument.SwitchValue = "-o ";
+      argument.Value = InputFiles[0].GetMetadata("OutputFile");
+      ActiveToolSwitches["OutputFile"] = argument;
+
+      if (InputFiles[0].GetMetadata("PartialCompilation") != "true") ActiveToolSwitches.Remove("PartialCompilation");
+      else
+      {
+        argument = new ToolSwitch(ToolSwitchType.String);
+        argument.MultipleValues = true;
+        argument.SwitchValue = "-part";
+        ActiveToolSwitches["PartialCompilation"] = argument;
+      }
+
+      if (InputFiles[0].GetMetadata("RecursionDepthLimit") == "") ActiveToolSwitches.Remove("RecursionDepthLimit");
+      else
+      {
+        argument = new ToolSwitch(ToolSwitchType.Integer);
+        argument.IsValid = true;
+        argument.Number = int.Parse(InputFiles[0].GetMetadata("RecursionDepthLimit"));
+        argument.SwitchValue = "-recursion_depth_limit ";
+        ActiveToolSwitches["RecursionDepthLimit"] = argument;
+      }
+
+      if (InputFiles[0].GetMetadata("StaticLoopLimit") == "") ActiveToolSwitches.Remove("StaticLoopLimit");
+      else
+      {
+        argument = new ToolSwitch(ToolSwitchType.Integer);
+        argument.IsValid = true;
+        argument.Number = int.Parse(InputFiles[0].GetMetadata("StaticLoopLimit"));
+        argument.SwitchValue = "-static_loop_length_limit ";
+        ActiveToolSwitches["StaticLoopLimit"] = argument;
+      }
+
+      AdditionalOptions = InputFiles[0].GetMetadata("AdditionalOptions");
+    }
+  }
+}
+]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="MplPreCompile" BeforeTargets="LlvmPreCompile" Condition="false"/>
+
+  <Target Name="MplCompile" AfterTargets="MplPreCompile" Condition="@(MPL) != ''">
     <ItemGroup>
-      <LLVM Include="%(MPL.CompilerOutput)"/>
+      <!-- Remove files that are excluded from build -->
+      <MPL Condition="%(MPL.ExcludedFromBuild) == true" Remove="@(MPL)"/>
+
+      <!-- Replace output file for files without partial compilation -->
+      <MPL Condition="%(MPL.PartialCompilation) != true" OutputFile="$(IntDir)mpl.ll"/>
+    </ItemGroup>
+
+    <!-- Compile files without partial compilation -->
+    <MplCompile
+      Condition="%(MPL.PartialCompilation) != true"
+      InputFiles="@(MPL)"
+      TrackerLogsFolder="$(TLogLocation)"/>
+
+    <!-- Compile files with partial compilation -->
+    <MplCompile
+      Condition="%(MPL.PartialCompilation) == true and %(MPL.Identity) != ''"
+      InputFiles="@(MPL)"
+      TrackerLogsFolder="$(TLogLocation)"/>
+
+    <!-- Prepare outputs for the next stage -->
+    <ItemGroup>
+      <LLVM Include="%(MPL.OutputFile)"/>
     </ItemGroup>
   </Target>
-  <Target Name="MPLClean">
-    <Delete Files="%(MPL.CompilerOutput)"/>
-  </Target>
-  <ItemGroup Condition="'@(MPL)'!=''">
-    <ProjectTools Include="LLVM"/>
-  </ItemGroup>
 </Project>

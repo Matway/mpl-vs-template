@@ -2,12 +2,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemDefinitionGroup>
     <MPL>
-      <CompilerPath>%USERPROFILE%\mpl\mplc.exe</CompilerPath>
-      <CompilerOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">-32bits -linker_option /DEFAULTLIB:legacy_stdio_definitions.lib -linker_option /DEFAULTLIB:msvcrtd.lib</CompilerOptions>
-      <CompilerOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-64bits -linker_option /DEFAULTLIB:legacy_stdio_definitions.lib -linker_option /DEFAULTLIB:msvcrtd.lib</CompilerOptions>
-      <CompilerOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">-32bits -linker_option /DEFAULTLIB:legacy_stdio_definitions.lib -linker_option /DEFAULTLIB:libcmt.lib -ndebug</CompilerOptions>
-      <CompilerOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">-64bits -linker_option /DEFAULTLIB:legacy_stdio_definitions.lib -linker_option /DEFAULTLIB:libcmt.lib -ndebug</CompilerOptions>
-      <CompilerOutput>$(IntDir)mpl.ll</CompilerOutput>
+      <CompilerPath>mplc</CompilerPath>
+      <PointerSize Condition="$(Platform)==Win32">32</PointerSize>
+      <PointerSize Condition="$(Platform)==x64">64</PointerSize>
+      <CallTrace>None</CallTrace>
+      <ShowMemoryUsage>false</ShowMemoryUsage>
+      <AdditionalDependencies Condition="$(Configuration)==Debug">legacy_stdio_definitions.lib;msvcrtd.lib</AdditionalDependencies>
+      <AdditionalDependencies Condition="$(Configuration)==Release">legacy_stdio_definitions.lib;libcmt.lib</AdditionalDependencies>
+      <DisableDebugInfo Condition="$(Configuration)==Debug">false</DisableDebugInfo>
+      <DisableDebugInfo Condition="$(Configuration)==Release">true</DisableDebugInfo>
+      <OutputFile>$(IntDir)%(Filename).ll</OutputFile>
+      <PartialCompilation>true</PartialCompilation>
     </MPL>
   </ItemDefinitionGroup>
 </Project>

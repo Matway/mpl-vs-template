@@ -1,4 +1,4 @@
-"String" useModule
+"String" use
 
 {} {} {} [
   ("Hello, world!" LF) printList
