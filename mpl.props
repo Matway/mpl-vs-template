@@ -13,6 +13,7 @@
       <DisableDebugInfo Condition="$(Configuration)==Release">true</DisableDebugInfo>
       <OutputFile>$(IntDir)%(Filename).ll</OutputFile>
       <PartialCompilation>true</PartialCompilation>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
     </MPL>
   </ItemDefinitionGroup>
 </Project>

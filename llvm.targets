@@ -4,101 +4,6 @@
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml"/>
   </ItemGroup>
 
-  <UsingTask
-    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" TaskFactory="CodeTaskFactory" TaskName="LlvmCompile">
-    <ParameterGroup>
-      <InputFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true"/>
-      <TrackerLogsFolder Required="true"/>
-    </ParameterGroup>
-    <Task>
-      <Reference Include="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
-      <Code Language="cs" Type="Class">
-        <![CDATA[
-using Microsoft.Build.CPPTasks;
-using Microsoft.Build.Framework;
-using System;
-using System.Collections;
-using System.Resources;
-
-namespace Matway.MSBuild
-{
-  public class LlvmCompile : TrackedVCToolTask
-  {
-    protected override ArrayList SwitchOrderList { get { return switchOrderList; } }
-    protected override string ToolName { get { return "clang"; } }
-    protected override ITaskItem[] TrackedInputFiles { get { return InputFiles; } }
-    protected override string TrackerIntermediateDirectory { get { return trackerLogsFolder; } }
-
-    private static ArrayList switchOrderList = new ArrayList
-    {
-      "OutputFile",
-      "AdditionalOptions",
-      "InputFiles"
-    };
-
-    private String trackerLogsFolder;
-
-    [Required]
-    public ITaskItem[] InputFiles
-    {
-      get { return ActiveToolSwitches["InputFiles"].TaskItemArray; }
-      set
-      {
-        ToolSwitch argument = new ToolSwitch(ToolSwitchType.ITaskItemArray);
-        argument.TaskItemArray = value;
-        ActiveToolSwitches["InputFiles"] = argument;
-      }
-    }
-
-    [Required]
-    public string TrackerLogsFolder { set { trackerLogsFolder = value; } }
-
-    public LlvmCompile() : base(new ResourceManager("Microsoft.Build.CPPTasks.Strings", typeof(TrackedVCToolTask).Assembly))
-    {
-      MinimalRebuildFromTracking = true;
-      TrackFileAccess = true;
-    }
-
-    protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
-    {
-      foreach (ITaskItem file in InputFiles)
-      {
-        Log.LogMessage(MessageImportance.High, file.ItemSpec);
-      }
-
-      return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
-    }
-
-    protected override string GenerateCommandLineCommands()
-    {
-      return base.GenerateResponseFileCommands();
-    }
-
-    protected override string GenerateResponseFileCommands()
-    {
-      return string.Empty;
-    }
-
-    protected override void PostProcessSwitchList()
-    {
-      ToolSwitch argument;
-
-      ToolExe = InputFiles[0].GetMetadata("CompilerPath");
-
-      argument = new ToolSwitch(ToolSwitchType.File);
-      argument.SwitchValue = "-o ";
-      argument.Value = InputFiles[0].GetMetadata("OutputFile");
-      ActiveToolSwitches["OutputFile"] = argument;
-
-      AdditionalOptions = InputFiles[0].GetMetadata("AdditionalOptions");
-    }
-  }
-}
-]]>
-      </Code>
-    </Task>
-  </UsingTask>
-
   <Target Name="LlvmPreCompile" AfterTargets="BuildCompile" Condition="false"/>
 
   <Target Name="LlvmCompile" AfterTargets="LlvmPreCompile" Condition="@(LLVM) != ''">
@@ -108,10 +13,14 @@ namespace Matway.MSBuild
     </ItemGroup>
 
     <!-- Compile files -->
-    <LlvmCompile
-      Condition="%(LLVM.Identity) != ''"
-      InputFiles="@(LLVM)"
-      TrackerLogsFolder="$(TLogLocation)"/>
+    <MultiToolTask
+      MinimalRebuildFromTracking="true"
+      Sources="@(LLVM)"
+      TaskAssemblyName="LlvmCompile.dll"
+      TaskName="Matway.MSBuild.LlvmCompile"
+      ToolExe="%(CompilerPath)"
+      TrackFileAccess="true"
+      TrackerLogDirectory="$(TLogLocation)"/>
 
     <!-- Prepare outputs for the next stage -->
     <ItemGroup>

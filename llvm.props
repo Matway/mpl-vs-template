@@ -8,6 +8,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-O0 -Wno-override-module -c -target x86_64-pc-windows $(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">-O3 -Wno-override-module -c -target i386-pc-windows $(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">-O3 -Wno-override-module -c -target x86_64-pc-windows $(AdditionalOptions)</AdditionalOptions>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
     </LLVM>
   </ItemDefinitionGroup>
 </Project>
