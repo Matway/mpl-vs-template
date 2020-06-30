@@ -11,4 +11,7 @@
     </MPL>
     <MPL Include="test.mpl" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="mpl.sl.natvis" />
+  </ItemGroup>
 </Project>

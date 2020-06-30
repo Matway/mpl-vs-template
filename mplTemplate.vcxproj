@@ -162,6 +162,9 @@
     <MPL Include="sl\memory.mpl" />
     <MPL Include="test.mpl" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="mpl.sl.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="llvm.targets" />
