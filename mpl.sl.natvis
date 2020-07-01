@@ -178,4 +178,25 @@
       <Item Name="size">stringSize</Item>
     </Expand>
   </Type>
+
+  <Type Name="list">
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na} {this->f10, na} {this->f11, na} {this->f12, na} {this->f13, na} {this->f14, na} {sizeof(this->f16), this->f15, na}...</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na} {this->f10, na} {this->f11, na} {this->f12, na} {this->f13, na} {this->f14, na} {this->f15, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na} {this->f10, na} {this->f11, na} {this->f12, na} {this->f13, na} {this->f14, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na} {this->f10, na} {this->f11, na} {this->f12, na} {this->f13, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na} {this->f10, na} {this->f11, na} {this->f12, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na} {this->f10, na} {this->f11, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na} {this->f10, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na} {this->f9, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na} {this->f8, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na} {this->f7, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na} {this->f6, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na} {this->f5, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na} {this->f4, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na} {this->f3, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na} {this->f2, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na} {this->f1, na})</DisplayString>
+    <DisplayString Optional="1">({this->f0, na})</DisplayString>
+    <DisplayString>()</DisplayString>
+  </Type>
 </AutoVisualizer>
