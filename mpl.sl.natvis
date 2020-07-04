@@ -122,6 +122,32 @@
     </Expand>
   </Type>
 
+  <Type Name="IntrusiveStack">
+    <Expand HideRawView="1">
+      <CustomListItems ExcludeView="full">
+        <Variable Name="index" InitialValue="0"/>
+        <Variable Name="item" InitialValue="last"/>
+        <Loop>
+          <If Condition="item == nullptr">
+            <Break/>
+          </If>
+          <Item Name="[{index}]">*item</Item>
+          <Exec>++index</Exec>
+          <Exec>item += (item->prev.data - (size_t)item) / sizeof(*item)</Exec>
+        </Loop>
+      </CustomListItems>
+      <Item IncludeView="full" Name="last">last</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="Mref">
+    <DisplayString Condition="data == 0">NIL</DisplayString>
+    <DisplayString Condition="data != 0">{data, X}</DisplayString>
+    <Expand HideRawView="1">
+      <Item Name="data">data, X</Item>
+    </Expand>
+  </Type>
+
   <Type Name="Owner">
     <DisplayString Condition="memory == nullptr">NIL</DisplayString>
     <DisplayString Condition="memory != nullptr">{memory, na} owner</DisplayString>
