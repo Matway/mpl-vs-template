@@ -159,6 +159,10 @@
     </MPL>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <MPL Include="sl\Array.mpl" />
+    <MPL Include="sl\String.mpl" />
+    <MPL Include="sl\control.mpl" />
+    <MPL Include="sl\conventions.mpl" />
     <MPL Include="sl\memory.mpl" />
     <MPL Include="test.mpl" />
   </ItemGroup>
