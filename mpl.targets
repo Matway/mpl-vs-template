@@ -5,7 +5,30 @@
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml"/>
   </ItemGroup>
 
-  <UsingTask AssemblyFile="MplCompile.dll" TaskName="MplCompile"/>
+  <UsingTask
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" TaskFactory="CodeTaskFactory" TaskName="MplMultiTaskTool">
+    <ParameterGroup>
+      <Sources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true"/>
+      <ToolExe Required="false"/>
+      <TrackerLogDirectory Required="false"/>
+    </ParameterGroup>
+    <Task>
+      <Code Language="cs" Source="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).cs" Type="Class"/>
+      <Reference Include="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+    </Task>
+  </UsingTask>
+
+  <UsingTask
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" TaskFactory="CodeTaskFactory" TaskName="MplCompile">
+    <ParameterGroup>
+      <InputFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true"/>
+      <TrackerLogsFolder Required="true"/>
+    </ParameterGroup>
+    <Task>
+      <Code Language="cs" Source="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).cs" Type="Class"/>
+      <Reference Include="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+    </Task>
+  </UsingTask>
 
   <Target Name="MplPreCompile" BeforeTargets="LlvmPreCompile" Condition="false"/>
 
@@ -25,14 +48,10 @@
       TrackerLogsFolder="$(TLogLocation)"/>
 
     <!-- Compile files with partial compilation -->
-    <MultiToolTask
+    <MplMultiTaskTool
       Condition="%(MPL.PartialCompilation) == true"
-      MinimalRebuildFromTracking="true"
       Sources="@(MPL)"
-      TaskAssemblyName="MplCompile.dll"
-      TaskName="Matway.MSBuild.MplCompile"
       ToolExe="%(CompilerPath)"
-      TrackFileAccess="true"
       TrackerLogDirectory="$(TLogLocation)"/>
 
     <!-- Prepare outputs for the next stage -->
