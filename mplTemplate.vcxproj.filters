@@ -12,6 +12,9 @@
     <MPL Include="sl\String.mpl">
       <Filter>sl</Filter>
     </MPL>
+    <MPL Include="sl\algorithm.mpl">
+      <Filter>sl</Filter>
+    </MPL>
     <MPL Include="sl\control.mpl">
       <Filter>sl</Filter>
     </MPL>

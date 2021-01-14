@@ -100,6 +100,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <MPL>
+      <AdditionalOptions>-hide_prefix sl/</AdditionalOptions>
       <IncludeFolders>sl</IncludeFolders>
     </MPL>
   </ItemDefinitionGroup>
@@ -120,6 +121,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <MPL>
+      <AdditionalOptions>-hide_prefix sl/</AdditionalOptions>
       <IncludeFolders>sl</IncludeFolders>
     </MPL>
   </ItemDefinitionGroup>
@@ -135,6 +137,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <MPL>
+      <AdditionalOptions>-hide_prefix sl/</AdditionalOptions>
       <IncludeFolders>sl</IncludeFolders>
     </MPL>
   </ItemDefinitionGroup>
@@ -155,12 +158,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <MPL>
+      <AdditionalOptions>-hide_prefix sl/</AdditionalOptions>
       <IncludeFolders>sl</IncludeFolders>
     </MPL>
   </ItemDefinitionGroup>
   <ItemGroup>
     <MPL Include="sl\Array.mpl" />
     <MPL Include="sl\String.mpl" />
+    <MPL Include="sl\algorithm.mpl" />
     <MPL Include="sl\control.mpl" />
     <MPL Include="sl\conventions.mpl" />
     <MPL Include="sl\memory.mpl" />
