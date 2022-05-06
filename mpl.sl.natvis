@@ -188,8 +188,10 @@
   </Type>
 
   <Type Name="String">
-    <DisplayString>{chars.dataBegin, [chars.dataSize - 1]na}</DisplayString>
-    <StringView>chars.dataBegin, [chars.dataSize - 1]na</StringView>
+    <DisplayString Condition="chars.dataSize == 0">""</DisplayString>
+    <DisplayString Condition="chars.dataSize != 0">{chars.dataBegin, [chars.dataSize - 1]na}</DisplayString>
+    <StringView Condition="chars.dataSize == 0">""</StringView>
+    <StringView Condition="chars.dataSize != 0">chars.dataBegin, [chars.dataSize - 1]na</StringView>
     <Expand HideRawView="1">
       <ExpandedItem ExcludeView="full">chars</ExpandedItem>
       <Item IncludeView="full" Name="chars">chars</Item>
@@ -197,8 +199,10 @@
   </Type>
 
   <Type Name="StringView">
-    <DisplayString>{stringData, [stringSize]na}</DisplayString>
-    <StringView>stringData, [stringSize]</StringView>
+    <DisplayString Condition="stringSize == 0">""</DisplayString>
+    <DisplayString Condition="stringSize != 0">{stringData, [stringSize]na}</DisplayString>
+    <StringView Condition="stringSize == 0">""</StringView>
+    <StringView Condition="stringSize != 0">stringData, [stringSize]</StringView>
     <Expand HideRawView="1">
       <Item Name="data">stringData, [stringSize]</Item>
       <Item Name="size">stringSize</Item>
