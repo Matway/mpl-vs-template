@@ -9,6 +9,9 @@
     <MPL Include="sl\Array.mpl">
       <Filter>sl</Filter>
     </MPL>
+    <MPL Include="sl\Span.mpl">
+      <Filter>sl</Filter>
+    </MPL>
     <MPL Include="sl\String.mpl">
       <Filter>sl</Filter>
     </MPL>
